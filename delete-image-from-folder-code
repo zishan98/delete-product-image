@@ -1,0 +1,25 @@
+<?php
+session_start();
+include('config.php');
+if (isset($_GET['id'])) {
+    $speaker_id = $_GET['id'];
+    $del = "SELECT * FROM `speaker` WHERE id = '$speaker_id'";
+    $del_query = mysqli_query($con, $del);
+    $fetch_data = mysqli_fetch_array($del_query);
+    $speaker_img = $fetch_data['image'];
+    $del_query = "DELETE FROM `speaker` WHERE id='$speaker_id'";
+    $del_query_run = mysqli_query($con, $del_query);
+    if ($del_query_run) {
+        if (file_exists("speaker-image/" . $speaker_img)) {
+            unlink("speaker-image/" . $speaker_img);
+        }
+        $_SESSION['message'] = "Speaker Data Deleted Successfully...!";
+        header("Location:speaker-list.php");
+        exit();
+    } else {
+        $_SESSION['error'] = "Something went wrong...!!";
+        header("Location:speaker-list.php");
+        exit();
+    }
+}
+?>
